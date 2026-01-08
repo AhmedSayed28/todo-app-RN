@@ -4,6 +4,7 @@ import { useState } from "react";
 export default function Index() {
 
   type Task = {
+    id: number;
     title: string;
     done: boolean;
 };
@@ -15,8 +16,28 @@ export default function Index() {
   const addTask = () =>{
     if(text === "") return;
 
-    setTasks([...tasks,{title: text , done: false}])
+    setTasks(tasks => [
+      ...tasks,{
+        id: Date.now(),
+        title:text,
+        done: false 
+      }
+    ]);
     setText("");
+    
+  }
+
+  const toggleDone = (id:number) =>{
+    setTasks(tasks => 
+      tasks.map(task => 
+        task.id === id 
+        ? { ...task , done: !task.done} : task
+      )
+    );
+  }
+
+  const deleteTask = (id:number) =>{
+    setTasks(tasks => tasks.filter(task=>task.id !== id))
   }
 
   return (
@@ -40,11 +61,25 @@ export default function Index() {
 
 
         {
-          tasks.map((task,index)=>(
-              <Text key={index}>{task.title}</Text>
-          ))
-        }
+          tasks.map(task => (
+              <View key={task.id}>
+                <Text>
+                  {task.title} {task.done ? "✅" : "❌"}
+                </Text>
 
+                <Button
+                  title={task.done ? "Undo" : "Done"}
+                  onPress={() => toggleDone(task.id)}
+                />
+
+                <Button
+                  title="Delete"
+                  onPress={() => deleteTask(task.id)}
+                />
+              </View>
+            ))
+
+        }
       </View>
   );
 }
