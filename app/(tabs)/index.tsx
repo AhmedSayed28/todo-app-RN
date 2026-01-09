@@ -1,33 +1,54 @@
-import { View, Text, TextInput, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  FlatList
+} from "react-native";
 import { useState } from "react";
 import { useTasks } from "../hooks/useTasks";
+import TaskItem from "../components/TaskItem";
+import { styles } from "../styles/styles";
 
 export default function Home() {
   const { tasks, addTask, toggleDone, deleteTask } = useTasks();
   const [text, setText] = useState("");
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text>All Tasks</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>All Tasks</Text>
 
       <TextInput
         value={text}
         onChangeText={setText}
-        placeholder="New task"
+        placeholder="Type your task..."
+        style={styles.input}
       />
 
-      <Pressable onPress={() => {
-        addTask(text);
-        setText("");
-      }}>
-        <Text>Add</Text>
+      <Pressable
+        style={styles.addButton}
+        onPress={() => {
+          addTask(text);
+          setText("");
+        }}
+      >
+        <Text style={styles.addButtonText}>+ Add Task</Text>
       </Pressable>
 
-      {tasks.map(task => (
-        <Text key={task.id}>
-          {task.title}
-        </Text>
-      ))}
+      <FlatList
+        data={tasks}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => (
+          <TaskItem
+            task={item}
+            onToggle={toggleDone}
+            onDelete={deleteTask}
+          />
+        )}
+        ListEmptyComponent={
+          <Text style={styles.empty}>No tasks yet 👀</Text>
+        }
+      />
     </View>
   );
 }

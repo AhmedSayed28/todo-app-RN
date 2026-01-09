@@ -1,35 +1,42 @@
-// /components/TaskItem.tsx
-import { useEffect, useRef } from "react";
-import { View, Text, Pressable, Animated } from "react-native";
-import { styles } from "../../styles/styles";
-import { TaskItemProps } from "../../types/types";
+import { View, Text, Pressable } from "react-native";
+import { styles } from "../styles/styles";
+import { Task } from "../hooks/useTasks";
 
-export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+type Props = {
+  task: Task;
+  onToggle: (id: number) => void;
+  onDelete: (id: number) => void;
+};
 
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true
-    }).start();
-  }, []);
-
+export default function TaskItem({ task, onToggle, onDelete }: Props) {
   return (
-    <Animated.View style={[styles.taskItem, { opacity: fadeAnim }]}>
-      <Text style={[styles.taskText, task.done && styles.taskDone]}>
-        {task.title} {task.done ? "✅" : "⏳"}
+    <View style={styles.taskItem}>
+      <Text
+        style={[
+          styles.taskText,
+          task.done && styles.taskDone
+        ]}
+      >
+        {task.title}
       </Text>
 
       <View style={styles.actions}>
-        <Pressable style={styles.doneBtn} onPress={() => onToggle(task.id)}>
-          <Text style={styles.btnText}>{task.done ? "Undo" : "Done"}</Text>
+        <Pressable
+          style={styles.doneBtn}
+          onPress={() => onToggle(task.id)}
+        >
+          <Text style={styles.btnText}>
+            {task.done ? "Undo" : "Done"}
+          </Text>
         </Pressable>
 
-        <Pressable style={styles.deleteBtn} onPress={() => onDelete(task.id)}>
+        <Pressable
+          style={styles.deleteBtn}
+          onPress={() => onDelete(task.id)}
+        >
           <Text style={styles.btnText}>Delete</Text>
         </Pressable>
       </View>
-    </Animated.View>
+    </View>
   );
 }
