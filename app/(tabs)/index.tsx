@@ -10,9 +10,9 @@ import {
   UIManager,
   Platform
 } from "react-native";
-import { Task } from "../types/types";
-import { styles } from "../styles/styles";
-import TaskItem from "./components/TaskItem";
+import { Task } from "../../types/types";
+import { styles } from "../../styles/styles";
+import TaskItem from "../components/TaskItem";
 
 // Enable LayoutAnimation for Android
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
