@@ -1,85 +1,56 @@
-import { Button, Text, TextInput, View } from "react-native";
-import { useState } from "react";
+// /screens/Index.tsx
+import { useState, useCallback } from "react";
+import { View, Text, TextInput, FlatList, Pressable } from "react-native";
+import { Task } from "../types/types";
+import { styles } from "../styles/styles";
+import TaskItem from "../components/TaskItem";
 
 export default function Index() {
-
-  type Task = {
-    id: number;
-    title: string;
-    done: boolean;
-};
-
-
   const [tasks, setTasks] = useState<Task[]>([]);
   const [text, setText] = useState("");
 
-  const addTask = () =>{
-    if(text === "") return;
-
-    setTasks(tasks => [
-      ...tasks,{
-        id: Date.now(),
-        title:text,
-        done: false 
-      }
+  const addTask = useCallback(() => {
+    if (!text.trim()) return;
+    setTasks(prev => [
+      ...prev,
+      { id: Date.now(), title: text.trim(), done: false }
     ]);
     setText("");
-    
-  }
+  }, [text]);
 
-  const toggleDone = (id:number) =>{
-    setTasks(tasks => 
-      tasks.map(task => 
-        task.id === id 
-        ? { ...task , done: !task.done} : task
-      )
+  const toggleDone = useCallback((id: number) => {
+    setTasks(prev =>
+      prev.map(task => (task.id === id ? { ...task, done: !task.done } : task))
     );
-  }
+  }, []);
 
-  const deleteTask = (id:number) =>{
-    setTasks(tasks => tasks.filter(task=>task.id !== id))
-  }
+  const deleteTask = useCallback((id: number) => {
+    setTasks(prev => prev.filter(task => task.id !== id));
+  }, []);
 
   return (
-      <View style={{ padding: 20 }}>
-        <Text style={{ fontSize: 24, marginBottom: 10 }}>Todo App</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Todo App</Text>
 
-        <TextInput 
+      <TextInput
         value={text}
         onChangeText={setText}
-        placeholder="Type Your Task.." 
-        style={{
-          borderWidth: 1,
-          padding: 10,
-          marginBottom: 10
-        }}
-        />
+        placeholder="Type your task..."
+        style={styles.input}
+      />
 
-        <Button title="Add Task" onPress={addTask}/>
+      <Pressable style={styles.addButton} onPress={addTask}>
+        <Text style={styles.addButtonText}>+ Add Task</Text>
+      </Pressable>
 
-        <Text style={{ marginTop: 20 , marginBottom: 20}}>Tasks will appear here 👇</Text>
-
-
-        {
-          tasks.map(task => (
-              <View key={task.id}>
-                <Text>
-                  {task.title} {task.done ? "✅" : "❌"}
-                </Text>
-
-                <Button
-                  title={task.done ? "Undo" : "Done"}
-                  onPress={() => toggleDone(task.id)}
-                />
-
-                <Button
-                  title="Delete"
-                  onPress={() => deleteTask(task.id)}
-                />
-              </View>
-            ))
-
-        }
-      </View>
+      <FlatList
+        data={tasks}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => (
+          <TaskItem task={item} onToggle={toggleDone} onDelete={deleteTask} />
+        )}
+        ListEmptyComponent={<Text style={styles.empty}>No tasks yet 👀</Text>}
+      />
+    </View>
   );
 }
