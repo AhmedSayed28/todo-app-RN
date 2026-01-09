@@ -1,9 +1,23 @@
 // /screens/Index.tsx
 import { useState, useCallback } from "react";
-import { View, Text, TextInput, FlatList, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  Pressable,
+  LayoutAnimation,
+  UIManager,
+  Platform
+} from "react-native";
 import { Task } from "../types/types";
 import { styles } from "../styles/styles";
 import TaskItem from "../components/TaskItem";
+
+// Enable LayoutAnimation for Android
+if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 export default function Index() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -11,20 +25,28 @@ export default function Index() {
 
   const addTask = useCallback(() => {
     if (!text.trim()) return;
+
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
     setTasks(prev => [
       ...prev,
       { id: Date.now(), title: text.trim(), done: false }
     ]);
+
     setText("");
   }, [text]);
 
   const toggleDone = useCallback((id: number) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
     setTasks(prev =>
       prev.map(task => (task.id === id ? { ...task, done: !task.done } : task))
     );
   }, []);
 
   const deleteTask = useCallback((id: number) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
     setTasks(prev => prev.filter(task => task.id !== id));
   }, []);
 

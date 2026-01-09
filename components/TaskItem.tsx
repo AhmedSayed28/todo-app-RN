@@ -1,11 +1,23 @@
 // /components/TaskItem.tsx
-import { View, Text, Pressable } from "react-native";
+import { useEffect, useRef } from "react";
+import { View, Text, Pressable, Animated } from "react-native";
 import { styles } from "../styles/styles";
 import { TaskItemProps } from "../types/types";
 
 export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
+  // Animation عند ظهور العنصر
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true
+    }).start();
+  }, []);
+
   return (
-    <View style={styles.taskItem}>
+    <Animated.View style={[styles.taskItem, { opacity: fadeAnim }]}>
       <Text style={[styles.taskText, task.done && styles.taskDone]}>
         {task.title} {task.done ? "✅" : "⏳"}
       </Text>
@@ -19,6 +31,6 @@ export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
           <Text style={styles.btnText}>Delete</Text>
         </Pressable>
       </View>
-    </View>
+    </Animated.View>
   );
 }
