@@ -1,11 +1,10 @@
 // /components/TaskItem.tsx
 import { useEffect, useRef } from "react";
 import { View, Text, Pressable, Animated } from "react-native";
-import { styles } from "../styles/styles";
-import { TaskItemProps } from "../types/types";
+import { styles } from "../../styles/styles";
+import { TaskItemProps } from "../../types/types";
 
 export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
-  // Animation عند ظهور العنصر
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
