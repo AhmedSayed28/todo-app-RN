@@ -6,9 +6,9 @@ import {
   FlatList
 } from "react-native";
 import { useState } from "react";
-import { useTasks } from "../hooks/useTasks";
-import TaskItem from "../components/TaskItem";
-import { styles } from "../styles/styles";
+import { useTasks } from "../../hooks/useTasks";
+import TaskItem from "../../components/TaskItem";
+import { styles } from "../../styles/styles";
 
 export default function Home() {
   const { tasks, addTask, toggleDone, deleteTask } = useTasks();

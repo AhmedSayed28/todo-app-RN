@@ -1,7 +1,7 @@
 import { View, Text, FlatList } from "react-native";
-import { useTasks } from "../hooks/useTasks";
-import TaskItem from "../components/TaskItem";
-import { styles } from "../styles/styles";
+import { useTasks } from "../../hooks/useTasks";
+import TaskItem from "../../components/TaskItem";
+import { styles } from "../../styles/styles";
 
 export default function Done() {
   const { tasks, toggleDone, deleteTask } = useTasks();
